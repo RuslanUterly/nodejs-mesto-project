@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import validator from 'validator';
 
 export type IUser = {
@@ -7,7 +7,8 @@ export type IUser = {
   avatar: string;
 };
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser>(
+  {
     name: {
       type: String,
       required: true,
@@ -30,8 +31,8 @@ const userSchema = new Schema<IUser>({
     },
   },
   {
-    versionKey: false
-  }
+    versionKey: false,
+  },
 );
 
 export default model<IUser>('user', userSchema);

@@ -1,7 +1,7 @@
-import {NextFunction, Request, Response} from "express";
-import Card from "../models/card";
-import {NotFoundError} from "../errors/not-found";
-import {BadRequestError} from "../errors/bad-request";
+import { NextFunction, Request, Response } from 'express';
+import Card from '../models/card';
+import { NotFoundError } from '../errors/not-found';
+import { BadRequestError } from '../errors/bad-request';
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   return Card.find({})
@@ -30,7 +30,7 @@ export const createCard = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
 
   return Card.findById(cardId)
     .orFail(new NotFoundError('Карточки не существует'))
@@ -78,7 +78,7 @@ export const dislikeCard = (req: Request, res: Response, next: NextFunction) => 
       if (error.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));
       } else {
-        next(error)
+        next(error);
       }
     });
 };

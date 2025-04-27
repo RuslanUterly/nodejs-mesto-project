@@ -9,7 +9,8 @@ export type ICard = {
   createdAt: Date;
 };
 
-const cardSchema = new Schema<ICard>({
+const cardSchema = new Schema<ICard>(
+  {
     name: {
       type: String,
       required: true,
@@ -41,8 +42,8 @@ const cardSchema = new Schema<ICard>({
     },
   },
   {
-    versionKey: false
-  }
+    versionKey: false,
+  },
 );
 
 export default model<ICard>('card', cardSchema);
