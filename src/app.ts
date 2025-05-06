@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
+import { errors } from 'celebrate';
 import { usersRouter } from './routes/users';
 import { cardsRouter } from './routes/cards';
 import { errorHandler } from './middlewares/error-handler';
@@ -30,8 +31,9 @@ const startServer = () => {
   app.use('/users', usersRouter);
   app.use('/cards', cardsRouter);
 
-  app.use(errorLogger);
   app.use(notFoundHandler);
+  app.use(errorLogger);
+  app.use(errors());
   app.use(errorHandler);
 
   app.listen(PORT, () => {

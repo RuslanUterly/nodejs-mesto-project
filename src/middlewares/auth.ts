@@ -14,7 +14,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'key');
+    payload = jwt.verify(token, process.env.JWT_SECRET || 'key');
   } catch {
     next(new UnauthorizedError('Вы не авторизованы'));
     return;

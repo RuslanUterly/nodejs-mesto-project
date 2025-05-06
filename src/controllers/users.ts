@@ -107,7 +107,7 @@ export const loginUser = (req: Request, res: Response, next: NextFunction) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'key', {
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || 'key', {
         expiresIn: '7d',
       });
       res
