@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import Card from '../models/card';
 import { NotFoundError } from '../errors/not-found';
 import { BadRequestError } from '../errors/bad-request';
+import { ForbiddenError } from '../errors/forbidden';
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   return Card.find({})
@@ -34,8 +35,14 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
 
   return Card.findById(cardId)
     .orFail(new NotFoundError('Карточки не существует'))
-    .then(() => Card.findByIdAndDelete(cardId))
-    .then((cardInfo) => res.send(cardInfo))
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        next(new ForbiddenError('Ошибка прав доступа'));
+      } else {
+        Card.findByIdAndDelete(cardId)
+          .then((cardInfo) => res.send(cardInfo));
+      }
+    })
     .catch((error) => {
       if (error.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));

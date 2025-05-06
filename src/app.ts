@@ -2,9 +2,14 @@ import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import { usersRouter } from './routes/users';
 import { cardsRouter } from './routes/cards';
-import { authHandler } from './middlewares/auth-handler';
 import { errorHandler } from './middlewares/error-handler';
+import { auth } from './middlewares/auth';
 import { notFoundHandler } from './middlewares/not-found-handler';
+import { createUser, loginUser } from './controllers/users';
+import { requestLogger, errorLogger } from './middlewares/logger';
+import { userSignInValidate, userSignUpValidate } from './middlewares/validator';
+
+const cookieParser = require('cookie-parser');
 
 const { PORT = 3000 } = process.env;
 
@@ -13,12 +18,19 @@ const startServer = () => {
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
+  app.use(requestLogger);
 
-  app.use(authHandler);
+  app.use(cookieParser());
+
+  app.post('/signup', userSignUpValidate, createUser);
+  app.post('/signin', userSignInValidate, loginUser);
+
+  app.use(auth);
 
   app.use('/users', usersRouter);
   app.use('/cards', cardsRouter);
 
+  app.use(errorLogger);
   app.use(notFoundHandler);
   app.use(errorHandler);
 
